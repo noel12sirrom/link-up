@@ -35,6 +35,7 @@ export interface LocationPost {
   maxPeople: number;
   currentInterested: number;
   userInterests: string[];
+  description?: string;
   timestamp: Date;
 }
 
