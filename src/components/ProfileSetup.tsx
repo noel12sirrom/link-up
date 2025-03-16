@@ -89,22 +89,25 @@ export default function ProfileSetup({ onComplete }: ProfileSetupProps) {
     try {
       setLoading(true);
 
-      // Create or update user profile
-      const userRef = doc(collection(db, 'users'), user.uid);
-      await setDoc(userRef, {
+      // Create profile data object, omitting undefined values
+      const profileData = {
         userId: user.uid,
         displayName: displayName || user.email?.split('@')[0] || 'Anonymous',
-        contactInfo,
-        contactType,
-        interests,
-        age: age ? parseInt(age) : undefined,
-        location,
-        bio,
-        gender,
-        occupation,
-        languages,
+        contactInfo: contactInfo || '',
+        contactType: contactType || 'phone',
+        interests: interests || [],
+        age: age ? parseInt(age) : null,
+        location: location || '',
+        bio: bio || '',
+        gender: gender || 'prefer_not_to_say',
+        occupation: occupation || '',
+        languages: languages || [],
         updatedAt: new Date().toISOString()
-      }, { merge: true });
+      };
+
+      // Create or update user profile
+      const userRef = doc(collection(db, 'userProfiles'), user.uid);
+      await setDoc(userRef, profileData, { merge: true });
 
       toast.success('Profile updated successfully!');
       if (onComplete) onComplete();
